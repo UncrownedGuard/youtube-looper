@@ -1,45 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Loop YouTube Video</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>YouTube Loop Player</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #121212;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem;
+    }
+    input, button {
+      padding: 10px;
+      margin: 10px;
+      width: 300px;
+      font-size: 16px;
+    }
+    iframe {
+      margin-top: 20px;
+      max-width: 100%;
+      width: 560px;
+      height: 315px;
+      border: none;
+    }
+  </style>
 </head>
 <body>
-    <h1>Loop a YouTube Video</h1>
-    <form id="videoForm">
-        <label for="youtube_url">Paste YouTube URL:</label><br>
-        <input type="text" id="youtube_url" name="youtube_url" required><br>
-        <input type="submit" value="Loop Video">
-    </form>
+  <h1>YouTube Video Looper</h1>
+  <input type="text" id="youtubeUrl" placeholder="Paste YouTube video URL here" />
+  <button onclick="loadVideo()">Loop Video</button>
+  <div id="videoContainer"></div>
 
-    <div id="videoContainer" style="margin-top: 20px;">
-        <!-- The video will be embedded here -->
-    </div>
+  <script>
+    function extractVideoID(url) {
+      const regex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([^\s&]+)/;
+      const match = url.match(regex);
+      return match ? match[1] : null;
+    }
 
-    <script>
-        document.getElementById('videoForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            var url = document.getElementById('youtube_url').value;
-            var videoId = getYouTubeVideoId(url);
-            
-            if (videoId) {
-                var iframe = `<iframe width="560" height="315" 
-                              src="https://www.youtube.com/embed/${videoId}?autoplay=1&loop=1&playlist=${videoId}" 
-                              frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" 
-                              allowfullscreen></iframe>`;
-                document.getElementById('videoContainer').innerHTML = iframe;
-            } else {
-                alert('Invalid YouTube URL');
-            }
-        });
+    function loadVideo() {
+      const url = document.getElementById('youtubeUrl').value;
+      const videoId = extractVideoID(url);
 
-        function getYouTubeVideoId(url) {
-            var regex = /(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*\?v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
-            var match = url.match(regex);
-            return match ? match[1] : null;
-        }
-    </script>
+      if (!videoId) {
+        alert("Please enter a valid YouTube URL.");
+        return;
+      }
+
+      const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&loop=1&playlist=${videoId}`;
+      const iframe = `<iframe src="${embedUrl}" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+      document.getElementById('videoContainer').innerHTML = iframe;
+    }
+  </script>
 </body>
 </html>
