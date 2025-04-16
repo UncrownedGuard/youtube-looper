@@ -87,10 +87,21 @@ button:hover {
   </div>
 
   <script>
-    function extractVideoID(url) {
-      const regex = /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^\s&]+)/;
-      const match = url.match(regex);
-      return match ? match[1] : null;
+function extractVideoID(url) {
+    try {
+      // Remove query parameters (like ?si=xyz)
+      const cleanUrl = url.split('?')[0];
+
+      // Handle both youtu.be and youtube.com formats
+      if (cleanUrl.includes('youtu.be/')) {
+      return cleanUrl.split('youtu.be/')[1];
+      }
+
+      const urlObj = new URL(url);
+      return urlObj.searchParams.get('v');
+      } catch (e) {
+      return null;
+      }
     }
 
     function loadVideo() {
