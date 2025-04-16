@@ -5,106 +5,94 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>YouTube Video Looper</title>
   <style>
-    /* Reset and base styles */
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
       background-color: #1e1e1e;
       color: #ffffff;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 40px 20px;
-      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+      width: 100%;
     }
 
     h1 {
-      font-size: 2.5rem;
-      margin-bottom: 20px;
+      font-size: 1.8rem;
+      text-align: center;
       color: #00bcd4;
+      margin-bottom: 20px;
     }
 
     .input-group {
       display: flex;
       flex-direction: column;
-      width: 100%;
-      max-width: 600px;
-      margin-bottom: 30px;
+      gap: 10px;
+      margin-bottom: 20px;
     }
 
-    .input-group input {
-      padding: 12px 15px;
+    input, button {
+      padding: 12px;
       font-size: 1rem;
       border: none;
       border-radius: 5px;
-      margin-bottom: 10px;
+    }
+
+    input {
       background-color: #2c2c2c;
-      color: #ffffff;
+      color: #fff;
     }
 
-    .input-group button {
-      padding: 12px 15px;
-      font-size: 1rem;
-      border: none;
-      border-radius: 5px;
+    button {
       background-color: #00bcd4;
-      color: #ffffff;
+      color: #fff;
       cursor: pointer;
-      transition: background-color 0.3s ease;
     }
 
-    .input-group button:hover {
+    button:hover {
       background-color: #0097a7;
     }
 
-    #videoContainer {
-      width: 100%;
-      max-width: 800px;
-      aspect-ratio: 16 / 9;
-      margin-top: 20px;
-    }
-
-    #videoContainer iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
+    .video-wrapper {
+      position: relative;
+      padding-bottom: 56.25%; /* 16:9 ratio */
+      height: 0;
+      overflow: hidden;
+      max-height: 405px;
       border-radius: 10px;
     }
 
-    @media (max-width: 600px) {
-      h1 {
-        font-size: 2rem;
-      }
-
-      .input-group input,
-      .input-group button {
-        font-size: 0.9rem;
-      }
+    .video-wrapper iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
     }
   </style>
 </head>
 <body>
-  <h1>YouTube Video Looper</h1>
-  <div class="input-group">
-    <input type="text" id="youtubeUrl" placeholder="Enter YouTube video URL" />
-    <button onclick="loadVideo()">Loop Video</button>
+  <div class="container">
+    <h1>YouTube Video Looper</h1>
+    <div class="input-group">
+      <input type="text" id="youtubeUrl" placeholder="Paste YouTube video URL here" />
+      <button onclick="loadVideo()">Loop Video</button>
+    </div>
+    <div class="video-wrapper" id="videoContainer"></div>
   </div>
-  <div id="videoContainer"></div>
 
   <script>
     function extractVideoID(url) {
-      const regex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([^\s&?]+)/;
+      const regex = /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^\s&]+)/;
       const match = url.match(regex);
       return match ? match[1] : null;
     }
 
     function loadVideo() {
-      const url = document.getElementById('youtubeUrl').value.trim();
+      const url = document.getElementById('youtubeUrl').value;
       const videoId = extractVideoID(url);
 
       if (!videoId) {
@@ -113,8 +101,7 @@
       }
 
       const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&loop=1&playlist=${videoId}`;
-      const iframe = `<iframe src="${embedUrl}" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
-      document.getElementById('videoContainer').innerHTML = iframe;
+      document.getElementById('videoContainer').innerHTML = `<iframe src="${embedUrl}" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
     }
   </script>
 </body>
